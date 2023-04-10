@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import lmLogo from '/LM.svg'
 import { useMediaQuery } from '@react-hook/media-query';
 
-function SideBar(props: Record<string, any>) {
+function SideBar() {
   
   const [time, setTime] = useState(new Date());
   const isSmallScreen = useMediaQuery('(max-width: 640px)');
   const [opened, setOpen] = useState(!isSmallScreen);
+
+  const login = () => {
+    window.location.assign('/login');
+  }
 
   const toggleDropdown = () => {
     setOpen(!opened);
@@ -31,7 +35,7 @@ function SideBar(props: Record<string, any>) {
           <h2 id='time' className="my-auto text-sm">{time.toLocaleTimeString()}</h2>
 
           <div id='login_box' className={isSmallScreen ? "hidden" : "flex justify-center text-xs ml-auto pr-4"}>
-            <button id = 'login_button' className="border-green-400 text-green-400 rounded-md my-auto border-2 h-8 px-1 w-20 mr-4 hover:text-white hover:border-white">Login</button>
+            <button id = 'login_button' className="border-green-400 text-green-400 rounded-md my-auto border-2 h-8 px-1 w-20 mr-4 hover:text-white hover:border-white" onClick={login}>Login</button>
             <button id = 'logout_button' className="border-green-200 text-green-200 rounded-md my-auto border-2 h-8 px-1 w-20 hover:text-white hover:border-white">Logout</button>
           </div>
 
@@ -41,7 +45,7 @@ function SideBar(props: Record<string, any>) {
 
             <ul className={opened ? "absolute text-xs pt-1 w-24 block" : "hidden"}>
               <li className="w-full">
-                <button className="border-green-400 text-green-400 rounded-md my-auto border-2 h-8 px-1 w-full">Login</button>
+                <button className="border-green-400 text-green-400 rounded-md my-auto border-2 h-8 px-1 w-full" onClick={login}>Login</button>
               </li>
               <li className="">
                 <button className="border-green-200 text-green-200 rounded-md my-auto border-2 h-8 px-1 w-full">Logout</button>
@@ -51,4 +55,5 @@ function SideBar(props: Record<string, any>) {
         </div>
       );
 }
+
 export default SideBar;
