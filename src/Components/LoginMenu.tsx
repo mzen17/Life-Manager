@@ -9,8 +9,8 @@ interface configuration{
 function LoginMenu(props: configuration) {
 
   // Global configurations
-  const [username, setName] = useState("");
-  const [password, setPassword] = useState("");
+  const [user, setName] = useState("");
+  const [pass, setPassword] = useState("");
   const [err, setErr] = useState("");
   const [attempted, setAttempted] = useState(0);
 
@@ -30,20 +30,35 @@ function LoginMenu(props: configuration) {
 
         // Try to fetch response
         try {
-          if(username == "" || password == "") {
+          if(user == "" || pass == "") {
             setErr("You must put in a field")
           }else {
+            const data = {
+              username: user,
+              password: pass
+            };
+            
+            // set up the request options
+            const requestOptions = {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+              body: JSON.stringify(data)
+            };
+
+            console.log(requestOptions);
+            
             if(props.LoginOrSignup == 0) {
-              const response = await fetch(`http://127.0.0.1:8000/validateuser/${username}/${password}`);
+              const response = await fetch(`http://127.0.0.1:8000/validateuser/`, requestOptions);
               const jsonData = await response.json();
-              if(!jsonData.state) {
+              console.log(jsonData.status);
+              if(!jsonData.status) {
                 setErr("Incorrect user or password.")
                 setAttempted(attempted+1);
               }else {
                 window.location.assign('/');
               }
             } else {
-              const response = await fetch(`http://127.0.0.1:8000/addusers/user=${username}/password=${password}`)
+              const response = await fetch(`http://127.0.0.1:8000/addusers/`, requestOptions)
               const jsonData = await response.json();
 
               if(jsonData.status == -1) {
@@ -69,11 +84,11 @@ function LoginMenu(props: configuration) {
           <h1 className="text-3xl font-normal mt-4 text-white">{props.Message}</h1>
 
           <label className = "text-white inline-block mt-4">Username</label>
-          <input className = "rounded-sm pl-1" type="text" value={username} onChange={handleChangeName}/>
+          <input className = "rounded-sm pl-1" type="text" value={user} onChange={handleChangeName}/>
 
           <label className = "text-white mt-4 inline-block">Password</label>
 
-          <input className = {(attempted < 1) ? "rounded-sm pl-1 mb-12" : "rounded-sm pl-1 mb-4"} type="password" value={password} onChange={handleChangePassword}/>
+          <input className = {(attempted < 1) ? "rounded-sm pl-1 mb-12" : "rounded-sm pl-1 mb-4"} type="password" value={pass} onChange={handleChangePassword}/>
 
           <label className = {(err == "") ? "hidden" : "text-sm text-red-600 mb-8"}>{err}</label>
 
