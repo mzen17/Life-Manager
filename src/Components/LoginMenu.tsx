@@ -31,7 +31,7 @@ function LoginMenu(props: configuration) {
         // Try to fetch response
         try {
           if(user == "" || pass == "") {
-            setErr("You must put in a field")
+            setErr("You must put in values.")
           }else {
             const data = {
               username: user,
@@ -44,21 +44,26 @@ function LoginMenu(props: configuration) {
               headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
               body: JSON.stringify(data)
             };
-
-            console.log(requestOptions);
             
+            // Handle login
             if(props.LoginOrSignup == 0) {
               const response = await fetch(`http://127.0.0.1:8000/validateuser/`, requestOptions);
               const jsonData = await response.json();
-              console.log(jsonData.status);
-              if(!jsonData.status) {
+
+              if(jsonData.status == 0) {
                 setErr("Incorrect user or password.")
                 setAttempted(attempted+1);
-              }else {
+              }else if(jsonData.status == 2) {
+                setErr("Connection timed out to database. Check back later.")
+              } else {
+                const token = jsonData.token;
+                document.cookie = `user=${data.username}`
+                document.cookie = `authToken=${token}`;
                 window.location.assign('/');
               }
+            // Handle signup
             } else {
-              const response = await fetch(`http://127.0.0.1:8000/addusers/`, requestOptions)
+              const response = await fetch(`http://127.0.0.1:8000/create_user/`, requestOptions)
               const jsonData = await response.json();
 
               if(jsonData.status == -1) {

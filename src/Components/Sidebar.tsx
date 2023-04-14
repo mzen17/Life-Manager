@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useMediaQuery } from '@react-hook/media-query';
 
-
 function Sidebar() {
 
     const isSmallScreen = useMediaQuery('(max-width: 640px)');
