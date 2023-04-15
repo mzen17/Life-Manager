@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from database import Database
+from app.database import Database
+
 import secrets
 from typing import List
 import asyncpg
