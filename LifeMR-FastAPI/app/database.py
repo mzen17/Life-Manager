@@ -5,7 +5,7 @@ from firebase_admin import firestore
 
 class Database:
     def __init__(self):
-        cred = credentials.Certificate('app/lifemr-firebase-key.json')
+        cred = credentials.Certificate('lifemr-firebase-key.json')
         firebase_admin.initialize_app(cred)
         self.db = firestore.client()
 
