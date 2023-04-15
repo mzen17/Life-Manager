@@ -1,0 +1,27 @@
+version: '3'
+services:
+  backend:
+    build: 
+      context: ./LM-FastAPI
+      target: development
+    command: sh -c "pip install --no-cache-dir -r requirements.txt --upgrade pip; uvicorn app.main:app --host 0.0.0.0 --port 7000"
+    environment:
+      - PORT=7000
+    ports:
+      - '7000:7000'
+    working_dir: /usr/src/lifemr-backend
+    volumes:
+      - ./LM-FastAPI:/usr/src/lifemr-backend/
+
+  frontend:
+    build: 
+      context: ./LM-ReactJS
+      target: development
+    command: sh -c "npm install; npm run dev --host"
+    environment:
+      - PORT=80
+    ports:
+      - '80:80'
+    working_dir: /usr/src/lifemr-frontend
+    volumes:
+      - ./LM-ReactJS:/usr/src/lifemr-frontend/
