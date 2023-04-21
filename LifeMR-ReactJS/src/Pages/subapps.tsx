@@ -9,8 +9,6 @@ interface appconfig{
 }
 
 function subapps(props: appconfig) {
-    const [sidebarOn, setOpen] = useState(!props.smallScreen);
-
    return (
     <div className = "max-w-screen overflow-x-hidden">
         <Sidebar smallScreen={props.smallScreen} />
