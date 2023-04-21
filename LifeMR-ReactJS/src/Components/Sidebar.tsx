@@ -1,30 +1,68 @@
 import React, { useState, useEffect } from "react";
-import { useMediaQuery } from '@react-hook/media-query';
+import { Canvas, useFrame } from '@react-three/fiber'
 
-function Sidebar() {
+import Box from "./box";
 
-    const isSmallScreen = useMediaQuery('(max-width: 640px)');
-    const [sidebarOn, setOpen] = useState(!isSmallScreen);
+interface config {
+    smallScreen: boolean;
+}
 
-    const toggleSidebar = () => {
+function Sidebar(props: config) {
+
+    const [sidebarOn, setOpen] = useState(!props.smallScreen);
+
+    const toggleSidebar = async () => {
+        console.log(sidebarOn);
+        const main = document.getElementById('main-app');
+        main!.style.transition = 'transform 0.2s ease-out';
+        if (!sidebarOn && !props.smallScreen) {
+            main!.style.transform = 'translateX(12rem)';
+        } else {
+            main!.style.transform = 'translateX(0rem)';
+        }
+        const sidebar = document.getElementById('sidebar-content');
+        sidebar!.style.transition = 'transform 0.2s ease-out';
+        if (sidebarOn) {
+            sidebar!.style.transform = 'translateX(-100%)';
+        } else {
+            sidebar!.style.transform = 'translateX(0)';
+        }
         setOpen(!sidebarOn);
     }
 
     return (
-        <div id = 'sidebar'>
-            <div id = 'sidebar-content' className = {(sidebarOn) ? ((!isSmallScreen) ? "w-48 min-h-[calc(100vh-4rem)] text-md flex flex-col float-left justify-between bg-black bg-opacity-75 text-white" : "w-48 min-h-[calc(100vh-4rem)] text-md flex flex-col float-left justify-between bg-black bg-opacity-75 text-white fixed") : "hidden"}>
-                <ul className= "w-full">
-                    <li><button className="w-full py-2 text-purple-100 hover:text-white">Dashboard</button></li>
-                    <li><button className="w-full py-2 text-purple-100 hover:text-white">Planner</button></li>
-                    <li><button className="w-full py-2 text-purple-100 hover:text-white">Calendar</button></li>
-                    <li><button className="w-full py-2 text-purple-100 hover:text-white">Grades</button></li>
-                </ul>
-                <div className="w-full h-full flex pb-8"><button id = 'Settings' className="border-purple-400 text-purple-400 text-xs rounded-md mx-auto border-2 h-8 px-1 w-20 hover:text-white hover:border-white">Settings</button></div>
+        <div id = 'sidebar' className = "fixed z-10">
+            <div id = 'sidebar-content' className = {"w-48 min-h-[calc(100vh-4rem)] text-md flex flex-col float-left bg-black bg-opacity-75 text-white transform " + ((sidebarOn) ? "translate-x-0 " : "translate-x-[-100%]" )}>
+                <Icon name={"Home"}/>
+                <Icon name={"Planner"}/>
+                <Icon name={"Tasks"}/>
+                <button id = 'Settings' className="absolute bottom-8 left-0 right-0 border-purple-400 text-purple-400 text-xs rounded-md mx-auto border-2 h-8 px-1 w-20 hover:text-white hover:border-white">Settings</button>
             </div>
-            <div id='toggle-sidebar' className = "fixed float-left flex text-white items-center min-h-[calc(100vh-4rem)]">
-                <button className="bg-black h-16 w-8 hover:bg-green-100 rounded-sm" onClick={toggleSidebar}>{(sidebarOn) ? "<" : ">"}</button>
+            <div id='toggle-sidebar' className = "fixed float-left flex items-center text-white min-h-[calc(100vh-4rem)]">
+                <button className="bg-transparent h-16 w-8 hover:font-bold rounded-sm text-lg" onClick={toggleSidebar}>{(sidebarOn) ? "<" : ">"}</button>
             </div>
         </div>
       );
 }
+
+interface IconConfig {
+    name: string;
+}
+
+const Icon = (props: IconConfig) => {
+    return (
+        <div className="flex items-center">
+        <div className = "w-16 h-16 inline-block">
+            <Canvas>
+                <ambientLight intensity={0.5} />
+                <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
+                <pointLight position={[-10, -10, -10]} />
+                <Box position={[0, 0, 0]} />
+            </Canvas>
+        </div>
+            {props.name}
+        </div>
+    )
+}
+
 export default Sidebar;
