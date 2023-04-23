@@ -101,7 +101,7 @@ function App() {
   
   // HTML
   return (
-    <div className="bg-[url('/space.jpg')] min-h-screen bg-cover bg-center bg-black bg-opacity-30 filter">
+    <div className="min-h-screen bg-cover bg-center bg-black filter">
       <NavBar LoggedIn={cookieLogged} username={(user!=null) ? user! : ""} controller={vanishTop}/>
       <SubApp smallScreen={isSmallScreen} />
       <LoginMenu LoginOrSignup={topscreen} Message={(topscreen == 0) ? "Login to Your Account" : "Sign up for your Account"} controller={vanishTop}/>
