@@ -18,6 +18,11 @@ class User(BaseModel):
     email: str
     password: str
     session_token: str
-    assignments: List[Assignment]
-    classes: List[Class]
+    assignments: list[Assignment]
+    classes: list[Class]
+
+class LoginUser(BaseModel):
+    username: str
+    password: str
+
 # Load Assignment

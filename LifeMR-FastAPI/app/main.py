@@ -2,11 +2,11 @@ from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import secrets
-from typing import List
 import asyncpg
 import time
 
 from app.database import Database
+from app.users import Assignment, LoginUser
 
 app = FastAPI()
 
@@ -21,30 +21,30 @@ app.add_middleware(
 
 db = Database()
 
-class Assignment(BaseModel):
-    name: str
-    duedate: int
-    description: str
-    quicklink: str
-    weight: int
-
-class LoginUser(BaseModel):
-    username: str
-    password: str
-
-
 # Page to add a user
 @app.post("/create_user/")
 async def add_users(user: LoginUser):
     status = await db.add_user(user.username, user.password)
     return {"status": status}
 
-
 # Page to get a list of users
 @app.get("/users")
 async def get_users():
+    print("Updated.")
     users = await db.get_users()
     return users
+
+# Fetch assignments for a user
+@app.get("/assignments/{user}")
+async def get_assignments(user: str):
+    query = await db.fetch_assignment(user)
+    return {"assignments": query}
+
+# Push an assignments for a user
+@app.post("/assignments/{user}")
+async def post_assignments(assignment: Assignment):
+    query = await db.push_assignment(user.username, assignment)
+    return {"assignments": query}
 
 # Page to validate users
 @app.post("/validateuser/")

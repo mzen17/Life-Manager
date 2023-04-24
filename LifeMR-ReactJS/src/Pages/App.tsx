@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useMediaQuery } from '@react-hook/media-query';
 
-import SubApp from "./subapps";
+import SubApp from "./MiniPages";
 import NavBar from "../Components/Navbar";
 import LoginMenu from '../Components/LoginMenu';
+import { diffProps } from '@react-three/fiber/dist/declarations/src/core/utils';
 
 
 function App() {
@@ -12,61 +13,66 @@ function App() {
 
   // Panel manager (None, Login, Sign Up, Settings)
   const [topscreen, setTop] = useState(-1);
-  const [panel, setPanel] = useState(0);
 
   // Get username from cookies
-  const user = document.cookie
-  .split("; ")
-  .find((row) => row.startsWith("user="))
-  ?.split("=")[1];
-
-  // Get session token from cookies
-  const token = document.cookie
-  .split("; ")
-  .find((row) => row.startsWith("authToken="))
-  ?.split("=")[1];
+  const [user, setUser] = useState("");
+  const [token, setToken] = useState("");
 
   // Cookie manager
   const [cookieLogged, setCookieLogged] = useState(false);
 
+  async function appUpdate() {
+    console.log("Current cookies are: " + document.cookie);
+     // Set cookies
+     setUser(document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("user="))
+      ?.split("=")[1] || ""); // provide a default value of ""
+
+    setToken(document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("authToken="))
+      ?.split("=")[1] || ""); // provide a default value of ""
+
+    console.log("Using values user=" + user + " token=" + token);
+
+    
+    if (token != null && token !== "" && user !== null && user !== "" && cookieLogged === false) {
+      const data = {
+        username: user,
+        password: token,
+      };
+
+      // set up the request options
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify(data),
+      };
+
+      // authenticate the token
+      const response = await fetch(
+        `http://${'localhost:' + 7000}/validatetoken/`,
+        requestOptions
+      );
+      const jsonData = await response.json();
+      console.log(jsonData);
+      setCookieLogged(jsonData.status);
+    }
+  }
+
   // When mounted, check cookie
   useEffect(() => {
-    async function fetchData() {
-      const menu = document.getElementById('menu');
-      if (token != null && token !== "" && user !== null && user !== "" && cookieLogged === false) {
-        console.log(token, user);
-        const data = {
-          username: user,
-          password: token,
-        };
-  
-        // set up the request options
-        const requestOptions = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-          body: JSON.stringify(data),
-        };
-  
-        // authenticate the token
-        const response = await fetch(
-          `http://${'localhost:' + 7000}/validatetoken/`,
-          requestOptions
-        );
-        const jsonData = await response.json();
-        console.log(jsonData);
-        setCookieLogged(jsonData.status);
-      }
-    }
-    
-    fetchData();
+   appUpdate();
   }, [token, user, cookieLogged]);
+
+  //
 
   // Slide and adjust top depending on status
   const vanishTop = async (id: number) => {
-    console.log("Switching to:" + id);
     if(id >= -1 && id <= 2) {
       const menu = document.getElementById('menu');
       menu!.style.transition = 'transform 0.5s ease-out';
@@ -102,10 +108,9 @@ function App() {
   // HTML
   return (
     <div className="min-h-screen bg-cover bg-center bg-black filter">
-      <NavBar LoggedIn={cookieLogged} username={(user!=null) ? user! : ""} controller={vanishTop}/>
-      <SubApp smallScreen={isSmallScreen} />
-      <LoginMenu LoginOrSignup={topscreen} Message={(topscreen == 0) ? "Login to Your Account" : "Sign up for your Account"} controller={vanishTop}/>
-
+      <NavBar LoggedIn={cookieLogged} smallScreen={isSmallScreen} controller={vanishTop}/>
+      <LoginMenu LoginOrSignup={topscreen} Message={(topscreen == 0) ? "Login" : "Sign up"} controller={vanishTop} update={appUpdate}/>
+      <SubApp smallScreen={isSmallScreen} username={user} token = {token} loggedIn = {cookieLogged} />
     </div>
   );
 }

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 // Props for configuration
 interface configuration{
   LoginOrSignup: number // 0 for login, 1 for signup
   Message :string // Front Display Message
   controller: Function;
+  update :Function;
 }
 
 function LoginMenu(props: configuration) {
@@ -15,15 +16,17 @@ function LoginMenu(props: configuration) {
   const [err, setErr] = useState("");
   const [attempted, setAttempted] = useState(0);
 
-  // Handle user and password changes
+  // Handle user
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   }
 
+  // Handle changes in password
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   }
 
+  // Functions array for what buttons do
   const functions: (() => string)[] = [
     () => props.controller(-1),
     () => props.controller(0),
@@ -62,9 +65,9 @@ function LoginMenu(props: configuration) {
           }else if(jsonData.status == 2) {
             setErr("Connection timed out to database. Check back later.")
           } else {
-            const token = jsonData.token;
-            document.cookie = `user=${data.username}`
-            document.cookie = `authToken=${token}`;
+            document.cookie = `user=${data.username};SameSite=Lax`;
+            document.cookie = `authToken=${jsonData.token};SameSite=Lax`;
+            props.update();
             setErr("Successfully Logged in!");
             props.controller(-1);
           }
@@ -83,7 +86,7 @@ function LoginMenu(props: configuration) {
         }
       }
 
-    }
+  }
 
   // Handle submission when button is hit
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -91,28 +94,29 @@ function LoginMenu(props: configuration) {
     loginUser();
   };
 
-    return (
-      <div id="menu" className = "fixed w-full h-[calc(100vh-4rem)] bg-opacity-70 translate-y-[-120%] justify-center items-center flex">
-        <form className = "w-96 h-96 relative bg-black rounded-md bg-opacity-50 items-center justify-center flex flex-col p-4" onSubmit={(e) => handleSubmit(e)}>
-          <button onClick={functions[0]} type="button" className="text-white text-right w-full">X</button>
-          <h1 className="text-3xl font-normal mt-4 text-white">{props.Message}</h1>
+  // Content
+  return (
+    <div id="menu" className = "fixed w-full h-[calc(100vh-4rem)] bg-opacity-90 translate-y-[-120%] justify-center items-center flex z-20">
+      <form className = "w-96 h-96 relative bg-black rounded-md bg-opacity-80 items-center justify-center flex flex-col p-4 border-2 border-green-400" onSubmit={(e) => handleSubmit(e)}>
+        <button onClick={functions[0]} type="button" className="text-white text-right w-full">X</button>
+        <h1 className="text-3xl font-normal mt-4 text-white">{props.Message}</h1>
 
-          <label className = "text-white inline-block mt-4">Username</label>
-          <input className = "rounded-sm pl-1" type="text" value={user} onChange={handleChangeName}/>
+        <label className = "text-white inline-block mt-4">Username</label>
+        <input className = "rounded-sm pl-1" type="text" value={user} onChange={handleChangeName}/>
 
-          <label className = "text-white mt-4 inline-block">Password</label>
+        <label className = "text-white mt-4 inline-block">Password</label>
 
-          <input className = {(attempted < 1) ? "rounded-sm pl-1 mb-12" : "rounded-sm pl-1 mb-4"} type="password" value={pass} onChange={handleChangePassword}/>
+        <input className = {(attempted < 1) ? "rounded-sm pl-1 mb-12" : "rounded-sm pl-1 mb-4"} type="password" value={pass} onChange={handleChangePassword}/>
 
-          <label className = {(err == "") ? "hidden" : "text-sm text-red-600 mb-8"}>{err}</label>
+        <label className = {(err == "") ? "hidden" : "text-sm text-red-600 mb-8"}>{err}</label>
 
-          <button id = 'login_button' className="flex-col border-green-400 text-green-400 rounded-md border-2 h-8 w-20 mb-4 hover:text-white hover:border-white" type="submit">{(props.LoginOrSignup == 0) ? "Login" : "Sign Up"}</button>
-          <label className = {props.LoginOrSignup == 0 ? "text-sm text-white mb-4" : "hidden"}>Don't have an account? <button type="button" className = "underline font-bold" onClick={functions[2]}>Sign up!</button></label>
-          <label className = {props.LoginOrSignup == 1 ? "text-sm text-white mb-4" : "hidden"}>Already have an account? <button type="button" className = "underline font-bold" onClick={functions[1]}>Sign in!</button></label>
+        <button id = 'login_button' className="flex-col border-green-400 text-green-400 rounded-md border-2 h-8 w-20 mb-4 hover:text-white hover:border-white" type="submit">{(props.LoginOrSignup == 0) ? "Login" : "Sign Up"}</button>
+        <label className = {props.LoginOrSignup == 0 ? "text-sm text-white mb-4" : "hidden"}>Don't have an account? <button type="button" className = "underline font-bold" onClick={functions[2]}>Sign up!</button></label>
+        <label className = {props.LoginOrSignup == 1 ? "text-sm text-white mb-4" : "hidden"}>Already have an account? <button type="button" className = "underline font-bold" onClick={functions[1]}>Sign in!</button></label>
 
-          <label className = {(attempted < 2 || props.LoginOrSignup != 0) ? "hidden" : "text-sm text-red-600 mb-8"}><a href="#" className = "underline font-medium">Forgot password?</a></label>
-        </form>
-        </div>
-      );
+        <label className = {(attempted < 2 || props.LoginOrSignup != 0) ? "hidden" : "text-sm text-red-600 mb-8"}><a href="#" className = "underline font-medium">Forgot password?</a></label>
+      </form>
+      </div>
+  );
 }
 export default LoginMenu;

@@ -1,18 +1,16 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import lmLogo from '/LM.svg'
-import { useMediaQuery } from '@react-hook/media-query';
 
 // Props for configuration
 interface configuration{
   LoggedIn: boolean // Front Display Message
-  username: string
-  controller: Function
+  controller: Function // Controller to toggle default view
+  smallScreen: boolean // Small screen or not as definied in App
 }
 
 function NavBar(props: configuration) {
   // Settings for bar
-  const isSmallScreen = useMediaQuery('(max-width: 640px)');
-  const [opened, setOpen] = useState(!isSmallScreen);
+  const [opened, setOpen] = useState(!props.smallScreen);
 
   // Redirect to login bar
   const login = () => {
@@ -38,7 +36,7 @@ function NavBar(props: configuration) {
 
   // Navbar
   return (
-    <div id="navbar" className="bg-black text-white flex bg-opacity-40 w-full h-16">
+    <div id="navbar" className="bg-black text-white flex bg-opacity-40 w-full h-16 border-b-2 border-green-400">
       {/* Branding and logo area */}
       <div id="brandbox" className="flex p-3 items-center pl-6 pr-6">
           <img src = {lmLogo} id='logo' alt='logo' className="opacity-100 inline w-8 mr-2"></img>
@@ -46,7 +44,7 @@ function NavBar(props: configuration) {
       </div>
 
       {/* Small screen render */}
-      {isSmallScreen && (
+      {props.smallScreen && (
         <div className= "group inline-block my-auto ml-auto">
         <Button id={'login_box'} func={toggleDropdown} text={"Dropdown"} extras={"mr-4 w-20 border-green-500 text-green-500 items-center text-center text-xs mx-auto justify-center"} />
         
@@ -58,7 +56,7 @@ function NavBar(props: configuration) {
       )}
   
       {/* Desktop render */}
-      {!isSmallScreen && (
+      {!props.smallScreen && (
           <div id='login_box' className="flex items-center justify-center text-xs ml-auto pr-16">
                 <Button id={'login_button'} func={login} text={"Login"} extras={(props.LoggedIn) ? "hidden" : "border-green-400 text-green-400 w-20 mr-4"} />
                 <Button id={'logout_button'} func={props.LoggedIn ? logout : signup} text={props.LoggedIn ? "Logout" : "Sign Up"} extras={"border-green-200 text-green-200 w-20"} />

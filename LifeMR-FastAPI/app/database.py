@@ -42,7 +42,7 @@ class Database:
         else:
             return False
 
-     # Validate a user
+     # Validate a token session
     async def validate_token(self, username: str, token: str, currTime: int):
         doc_ref = self.db.collection(u'users').document(username)
         doc = doc_ref.get()
@@ -57,22 +57,13 @@ class Database:
         query = users_ref.stream()
         return [doc.to_dict() for doc in query]
 
-    
-    async def upload_assignments_to_storage(user, assignment: Assignment):
-        assignments_json = json.dumps(assignments)
+    # get assignments for a user
+    async def fetch_assignment(self, username :str):
+        assignments_ref = self.db.collection(u'users').document(username).collection(u'assignments')
+        query = assignments_ref.stream()
+        return [doc.to_dict() for doc in query]  
 
-        blob = bucket.blob(f"users/{user}/assignments.json")
-        blob.upload_from_string(assignments_json)
-
-        print(f"Assignments uploaded for user {user}")
-
-    async def delAssignment(user, id):
-        assignments_json = json.dumps(assignments)
-
-        # Create a blob reference for the user's file in Firebase Storage
-        blob = bucket.blob(f"users/{user_session_token}/assignments.json")
-
-        # Upload the assignments JSON string to Firebase Storage
-        blob.upload_from_string(assignments_json)
-
-        print(f"Assignments uploaded for user {user_session_token}")
+    # push assignments for a user
+    async def push_assignment(self, username: str, task: Assignment):
+        assignments_ref = self.db.collection(u'users').document(username).collection(u'assignments')
+        assignments_ref.add(assignment.to_dict())
