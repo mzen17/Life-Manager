@@ -2,10 +2,16 @@ from pydantic import BaseModel
 
 class Assignment(BaseModel):
     name: str
-    duedate: int
-    description: str
+    duedate: str
     quicklink: str
-    weight: int
+
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'duedate': self.duedate,
+            'quicklink': self.quicklink
+        }
+
 
 class Class(BaseModel):
     name: str

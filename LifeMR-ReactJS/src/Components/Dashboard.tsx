@@ -32,8 +32,8 @@ function Dashboard(props: Details) {
           requestOptions
         );
         const jsonData = await response.json();
-        console.log("Setted up users assignments.");
-        setList(jsonData);
+        console.log(JSON.stringify(jsonData));
+        setList(jsonData.assignments);
       }
     }
     loadJson();
@@ -46,7 +46,7 @@ function Dashboard(props: Details) {
       </h1>
       {
         (assignmentList.length > 0) ? (
-          assignmentList.map((assignment) => <div key={assignment.name}>{assignment.name}</div>)
+          assignmentList.map((assignment) => <div className="text-white" key={assignment.name}>{assignment.name}</div>)
         ) : (
           <div className = "text-white pt-2">You have no assignments.</div>
         )

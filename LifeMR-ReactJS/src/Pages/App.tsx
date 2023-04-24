@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useMediaQuery } from '@react-hook/media-query';
 
-import SubApp from "./MiniPages";
+import MiniPage from "./MiniPages";
 import NavBar from "../Components/Navbar";
 import LoginMenu from '../Components/LoginMenu';
-import { diffProps } from '@react-three/fiber/dist/declarations/src/core/utils';
-
 
 function App() {
   // Manage screen size
@@ -22,7 +20,7 @@ function App() {
   const [cookieLogged, setCookieLogged] = useState(false);
 
   async function appUpdate() {
-    console.log("Current cookies are: " + document.cookie);
+   // console.log("Current cookies are: " + document.cookie);
      // Set cookies
      setUser(document.cookie
       .split("; ")
@@ -34,7 +32,7 @@ function App() {
     .find((row) => row.startsWith("authToken="))
       ?.split("=")[1] || ""); // provide a default value of ""
 
-    console.log("Using values user=" + user + " token=" + token);
+    //console.log("Using values user=" + user + " token=" + token);
 
     
     if (token != null && token !== "" && user !== null && user !== "" && cookieLogged === false) {
@@ -110,7 +108,7 @@ function App() {
     <div className="min-h-screen bg-cover bg-center bg-black filter">
       <NavBar LoggedIn={cookieLogged} smallScreen={isSmallScreen} controller={vanishTop}/>
       <LoginMenu LoginOrSignup={topscreen} Message={(topscreen == 0) ? "Login" : "Sign up"} controller={vanishTop} update={appUpdate}/>
-      <SubApp smallScreen={isSmallScreen} username={user} token = {token} loggedIn = {cookieLogged} />
+      <MiniPage smallScreen={isSmallScreen} username={user} token = {token} loggedIn = {cookieLogged} />
     </div>
   );
 }

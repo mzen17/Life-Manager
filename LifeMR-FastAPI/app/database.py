@@ -66,4 +66,4 @@ class Database:
     # push assignments for a user
     async def push_assignment(self, username: str, task: Assignment):
         assignments_ref = self.db.collection(u'users').document(username).collection(u'assignments')
-        assignments_ref.add(assignment.to_dict())
+        assignments_ref.add(task.to_dict())
