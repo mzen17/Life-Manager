@@ -4,15 +4,8 @@ interface Details {
   username: string;
   token: string;
   loggedIn: boolean;
+  controller: Function;
 }
-
-interface Assignment {
-  name: string;
-  duedate: number;
-  quicklink: string;
-  weight: number;
-}
-
 
 function AssignmentForm(props: Details) {
   const [assignmentname, setName] = useState("");
@@ -22,6 +15,7 @@ function AssignmentForm(props: Details) {
   function submit (e: any) {
     e.preventDefault();
     submitForm();
+    props.controller(0);
   }
 
   const submitForm = async() => {
@@ -42,7 +36,7 @@ function AssignmentForm(props: Details) {
         body: JSON.stringify(data)
       };
 
-      const response = await fetch(`http://localhost:7000/assignments/`, requestOptions);
+      const response = await fetch(`http://localhost:7000/assignments/${props.username}`, requestOptions);
       const jsonData = await response.json();
 
       if(jsonData.status != 0) {

@@ -35,8 +35,8 @@ function Sidebar(props: config) {
         <div id = 'sidebar' className = {"fixed z-10" + ((sidebarOn) ? "translate-x-0 " : "translate-x-[-100%]")}>
             <div id = 'sidebar-content' className = {"border-r-2 border-green-400 w-48 min-h-[calc(100vh-4rem)] text-md flex flex-col float-left bg-black  bg-opacity-75"}>
                 <Icon name={"Home"} switchTo={0} controller={props.controller}/>
-                <Icon name={"Tasks"} switchTo={10} controller={props.controller}/>
-                <Icon name={"Grades"} switchTo={20} controller={props.controller}/>
+                <Icon name={"Tasks"} switchTo={1} controller={props.controller}/>
+                <Icon name={"Grades"} switchTo={2} controller={props.controller}/>
                 <button id = 'Settings' className="absolute bottom-8 left-0 right-0 border-purple-400 text-purple-400 text-xs rounded-md mx-auto border-2 h-8 px-1 w-20 hover:text-white hover:border-white">Settings</button>
             </div>
             <div id='toggle-sidebar' className = "fixed float-left flex items-center text-white min-h-[calc(100vh-4rem)]">

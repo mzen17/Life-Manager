@@ -35,11 +35,11 @@ function subapps(props: appconfig) {
             {(() => {
             switch (app) {
                 case 0:
-                return <Dashboard username={props.username} token = {props.token} loggedIn = {props.loggedIn}/>;
+                return <Dashboard username={props.username} token = {props.token} loggedIn = {props.loggedIn} controller={switcher}/>;
                 case 1:
-                return <AssignmentForm username={props.username} token = {props.token} loggedIn = {props.loggedIn}/>;
+                return <AssignmentForm username={props.username} token = {props.token} loggedIn = {props.loggedIn} controller={switcher}/>;
                 default:
-                return <AssignmentForm username={props.username} token = {props.token} loggedIn = {props.loggedIn}/>;
+                return <AssignmentForm username={props.username} token = {props.token} loggedIn = {props.loggedIn} controller={switcher}/>;
             }
             })()}
             </div>

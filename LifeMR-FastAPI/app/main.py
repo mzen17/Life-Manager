@@ -41,11 +41,15 @@ async def get_assignments(user: str):
     return {"assignments": query}
 
 # Push an assignments for a user
-@app.post("/assignments/")
-async def post_assignments(assignment: Assignment):
+@app.post("/assignments/{user}")
+async def post_assignments(user: str, assignment: Assignment):
     print("cool!")
-    query = await db.push_assignment("bob", assignment)
+    query = await db.push_assignment(user, assignment)
     return {"assignments": query}
+
+@app.get("/grades/{user}")
+async def update(user: str):
+    return {"grades" : []}
 
 # Page to validate users
 @app.post("/validateuser/")

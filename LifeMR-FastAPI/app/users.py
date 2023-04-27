@@ -25,7 +25,8 @@ class User(BaseModel):
     password: str
     session_token: str
     assignments: list[Assignment]
-    classes: list[Class]
+    tokens: list[int]
+
 
 class LoginUser(BaseModel):
     username: str
