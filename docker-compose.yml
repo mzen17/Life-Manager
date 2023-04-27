@@ -25,3 +25,21 @@ services:
     working_dir: /usr/src/lifemr-frontend
     volumes:
       - ./LifeMR-ReactJS:/usr/src/lifemr-frontend/
+
+  postgresql-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: lifemr
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+
+
+    
