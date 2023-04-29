@@ -12,7 +12,6 @@ class Assignment(BaseModel):
             'quicklink': self.quicklink
         }
 
-
 class Class(BaseModel):
     name: str
     description: str

@@ -2,4 +2,5 @@ fastapi
 uvicorn
 asyncpg
 sqlalchemy
+psycopg2
 firebase-admin

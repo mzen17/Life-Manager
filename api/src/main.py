@@ -5,8 +5,8 @@ import secrets
 import asyncpg
 import time
 
-from app.database import Database
-from app.users import Assignment, LoginUser
+from src.database import Database
+from src.models import Assignment, LoginUser
 
 app = FastAPI()
 

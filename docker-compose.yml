@@ -1,21 +1,10 @@
 version: '3'
 services:
-  backend:
+  web:
+    container_name: lifemr-web
+    init: true
     build: 
-      context: ./LifeMR-FastAPI
-      target: development
-    command: sh -c "pip install --no-cache-dir -r requirements.txt --upgrade pip; uvicorn app.main:app --host 0.0.0.0 --port 7000 --reload"
-    environment:
-      - PORT=7000
-    ports:
-      - '7000:7000'
-    working_dir: /usr/src/lifemr-backend
-    volumes:
-      - ./LifeMR-FastAPI:/usr/src/lifemr-backend/
-
-  frontend:
-    build: 
-      context: ./LifeMR-ReactJS
+      context: ./web
       target: development
     command: sh -c "npm install; npm run dev --host"
     environment:
@@ -24,9 +13,25 @@ services:
       - '80:80'
     working_dir: /usr/src/lifemr-frontend
     volumes:
-      - ./LifeMR-ReactJS:/usr/src/lifemr-frontend/
+      - ./web:/usr/src/lifemr-frontend/
 
-  postgresql-db:
+  api:
+    container_name: lifemr-api
+    init: true
+    build: 
+      context: ./api
+      target: development
+    command: sh -c "pip install --no-cache-dir -r requirements.txt --upgrade pip; uvicorn src.main:app --host 0.0.0.0 --port 7000 --reload"
+    environment:
+      - PORT=7000
+    ports:
+      - '7000:7000'
+    working_dir: /usr/src/lifemr-backend
+    volumes:
+      - ./api:/usr/src/lifemr-backend/
+
+  postgres:
+    container_name: lifemr-db
     image: postgres
     restart: always
     environment:
@@ -36,10 +41,4 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
-
-volumes:
-  db_data:
-
-
-    
+      - ./db:/var/lib/postgresql/data/
